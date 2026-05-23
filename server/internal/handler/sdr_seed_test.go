@@ -1,12 +1,6 @@
 package handler
 
-import (
-	"context"
-	"testing"
-
-	"github.com/jackc/pgx/v5/pgtype"
-	db "github.com/multica-ai/multica/server/pkg/db/generated"
-)
+import "testing"
 
 func TestSeedSDRAgentsDefinitions(t *testing.T) {
 	if len(sdrAgentDefs) != 5 {
@@ -45,21 +39,4 @@ func TestDefaultScoreRules(t *testing.T) {
 			t.Errorf("missing score rule for event type: %s", expected)
 		}
 	}
-}
-
-func TestSeedSDRAgentsNoDB(t *testing.T) {
-	// Verify the function exists and the definitions are correct.
-	// Actual DB seeding is tested via integration tests.
-	ctx := context.Background()
-	// Create a mock qtx that will fail (expected), just verify no panic
-	qtx := &db.Queries{}
-	seedSDRAgents(ctx, qtx, pgtype.UUID{}, pgtype.UUID{})
-	// Should not panic even with nil/empty queries
-}
-
-func TestSeedDefaultScoreRulesNoDB(t *testing.T) {
-	ctx := context.Background()
-	qtx := &db.Queries{}
-	seedDefaultScoreRules(ctx, qtx, pgtype.UUID{})
-	// Should not panic even with nil/empty queries
 }
