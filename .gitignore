@@ -1,0 +1,78 @@
+﻿node_modules
+dist
+*.log
+.DS_Store
+.envrc
+
+# build outputs
+.turbo
+.next
+out
+build
+bin
+dist-electron
+*.tsbuildinfo
+# ...except electron-builder's source resources dir, which holds tracked
+# config files (entitlements, icons) - not build output.
+!apps/desktop/build/
+!apps/desktop/build/**
+
+# env
+.env*
+!.env.example
+*.env
+*.env.*
+*.local
+*.secret
+*.secrets
+!.env.example
+
+# test coverage
+coverage
+
+# Go
+server/bin/
+server/tmp/
+server/migrate
+server/daemon
+server/multica
+server/server.exe
+server/server-arm64
+
+# Test artifacts
+test-results/
+apps/web/test-results/
+
+# context (agent workspace)
+.context
+
+# local settings
+.claude/
+.tool-versions
+
+# feature tracking
+_features/
+
+# runtime
+*.pid
+
+# platform specific
+*.dmg
+*.app
+server/server
+data/
+.kilo
+server/multica.exe
+server/cim-arm64
+server/migrate-arm64
+server/multica-arm64
+
+# backups, dumps, and local forensic artifacts
+*.bak
+*.backup
+*.dump
+*.sql.gz
+*.sqlite
+*.db
+bckp/
+*.codex-*.bak
