@@ -1,5 +1,5 @@
 import { LoginPage } from "@multica/views/auth";
-import { MulticaIcon } from "@multica/ui/components/common/multica-icon";
+import { CimeriaIcon } from "@multica/ui/components/common/cimeria-icon";
 
 const WEB_URL = import.meta.env.VITE_APP_URL || "http://localhost:3000";
 
@@ -20,7 +20,7 @@ export function DesktopLoginPage() {
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
       />
       <LoginPage
-        logo={<MulticaIcon bordered size="lg" />}
+        logo={<CimeriaIcon bordered size="lg" />}
         onSuccess={() => {
           // Auth store update triggers AppContent re-render → shows DesktopShell.
           // Initial workspace navigation happens in routes.tsx via IndexRedirect.

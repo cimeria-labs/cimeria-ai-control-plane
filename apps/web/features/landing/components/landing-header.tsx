@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MulticaIcon } from "@multica/ui/components/common/multica-icon";
+import { CimeriaIcon } from "@multica/ui/components/common/cimeria-icon";
 import { cn } from "@multica/ui/lib/utils";
 import { useAuthStore } from "@multica/core/auth";
 import { useLocale } from "../i18n";
@@ -26,7 +26,7 @@ export function LandingHeader({
     >
       <div className="mx-auto flex h-[76px] max-w-[1320px] items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
-          <MulticaIcon
+          <CimeriaIcon
             className={cn(
               "size-5",
               variant === "dark" ? "text-white" : "text-[#0a0d12]",

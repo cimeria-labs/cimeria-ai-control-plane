@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MulticaIcon } from "@multica/ui/components/common/multica-icon";
+import { CimeriaIcon } from "@multica/ui/components/common/cimeria-icon";
 import { useAuthStore } from "@multica/core/auth";
 import { GitHubMark, githubUrl } from "./shared";
 import { useLocale } from "../i18n";
@@ -19,7 +19,7 @@ export function LandingFooter() {
           {/* Left — newsletter / CTA */}
           <div className="lg:w-[340px] lg:shrink-0">
             <Link href="#product" className="flex items-center gap-3">
-              <MulticaIcon className="size-5 text-white" noSpin />
+              <CimeriaIcon className="size-5 text-white" noSpin />
               <span className="text-[18px] font-semibold tracking-[0.04em] lowercase">
                 cimeria
               </span>
@@ -87,7 +87,7 @@ export function LandingFooter() {
         {/* Giant logo */}
         <div className="relative overflow-hidden pb-4">
           <div className="flex items-end gap-6 sm:gap-8">
-            <MulticaIcon
+            <CimeriaIcon
               className="size-[clamp(4rem,12vw,10rem)] shrink-0 text-white"
               noSpin
             />

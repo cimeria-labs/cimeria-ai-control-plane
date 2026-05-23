@@ -5,7 +5,7 @@ import { useAuthStore } from "@multica/core/auth";
 import { workspaceKeys, workspaceListOptions } from "@multica/core/workspace/queries";
 import { api } from "@multica/core/api";
 import { ThemeProvider } from "@multica/ui/components/common/theme-provider";
-import { MulticaIcon } from "@multica/ui/components/common/multica-icon";
+import { CimeriaIcon } from "@multica/ui/components/common/cimeria-icon";
 import { Toaster } from "sonner";
 import { DesktopLoginPage } from "./pages/login";
 import { DesktopShell } from "./components/desktop-layout";
@@ -118,7 +118,7 @@ function AppContent() {
   if (isLoading || bootstrapping) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <MulticaIcon className="size-6 animate-pulse" />
+        <CimeriaIcon className="size-6 animate-pulse" />
       </div>
     );
   }
