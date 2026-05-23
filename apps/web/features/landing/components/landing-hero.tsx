@@ -12,6 +12,7 @@ import {
   OpenClawLogo,
   OpenCodeLogo,
   GitHubMark,
+  demoEvidenceUrl,
   githubUrl,
   heroButtonClassName,
 } from "./shared";
@@ -45,7 +46,7 @@ export function LandingHero() {
                 {user ? t.header.dashboard : t.hero.cta}
               </Link>
               <Link
-                href="https://github.com/multica-ai/multica/releases/latest"
+                href={demoEvidenceUrl}
                 target="_blank"
                 rel="noreferrer"
                 className={heroButtonClassName("ghost")}
@@ -118,7 +119,7 @@ export function LandingHero() {
 }
 
 const INSTALL_COMMAND =
-  "curl -fsSL https://raw.githubusercontent.com/multica-ai/multica/main/scripts/install.sh | bash";
+  "git clone https://github.com/cimeria-labs/cimeria-ai-control-plane.git";
 
 function InstallCommand() {
   const [copied, setCopied] = useState(false);
@@ -179,12 +180,13 @@ function LandingBackdrop() {
   return (
     <div className="pointer-events-none absolute inset-0">
       <Image
-        src="/images/landing-bg.jpg"
+        src="/images/cimeria-portfolio.png"
         alt=""
         fill
         priority
-        className="object-cover object-center"
+        className="object-cover object-center opacity-45 blur-sm scale-105"
       />
+      <div className="absolute inset-0 bg-[#05070b]/55" />
     </div>
   );
 }
@@ -194,10 +196,10 @@ function ProductImage({ alt }: { alt: string }) {
     <div>
       <div className="relative overflow-hidden border border-white/14">
         <Image
-          src="/images/landing-hero.png"
+          src="/images/cimeria-pipeline-board.png"
           alt={alt}
-          width={3532}
-          height={2382}
+          width={1911}
+          height={1072}
           className="block h-auto w-full"
           sizes="(max-width: 1320px) 100vw, 1320px"
           quality={85}

@@ -1,7 +1,7 @@
 import { cn } from "@multica/ui/lib/utils";
 
-export const githubUrl = "https://github.com/multica-ai/multica";
-export const twitterUrl = "https://x.com/MulticaAI";
+export const githubUrl = "https://github.com/cimeria-labs/cimeria-ai-control-plane";
+export const demoEvidenceUrl = "https://github.com/cimeria-labs/cimeria-ai-control-plane/blob/main/docs/demo-evidence.md";
 
 export function GitHubMark({ className }: { className?: string }) {
   return (

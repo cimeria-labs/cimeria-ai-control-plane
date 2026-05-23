@@ -2,7 +2,7 @@
 
 Cimeria is an AI agent control plane and AI SDR pipeline. It connects workspace onboarding, daemon registration, runtime task dispatch, lead capture, agent handoffs, and human-visible issues into one operational loop.
 
-This repository is a clean public showcase of the current product direction: a real deployed system evolving from Multica into Cimeria, focused on applied AI agents for sales development and operational automation.
+This repository is a clean public showcase of the current product direction: a real deployed system evolving from an earlier agent orchestration prototype into Cimeria, focused on applied AI agents for sales development and operational automation.
 
 ## Product Loop
 

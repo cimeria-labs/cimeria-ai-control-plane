@@ -2,12 +2,11 @@
 
 import { createContext, useContext, useState, useCallback } from "react";
 import { en } from "./en";
-import { zh } from "./zh";
 import type { LandingDict, Locale } from "./types";
 
-const dictionaries: Record<Locale, LandingDict> = { en, zh };
+const dictionaries: Record<Locale, LandingDict> = { en };
 
-const COOKIE_NAME = "multica-locale";
+const COOKIE_NAME = "cimeria-locale";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
 type LocaleContextValue = {

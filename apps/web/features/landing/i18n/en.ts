@@ -1,4 +1,4 @@
-import { githubUrl } from "../components/shared";
+import { demoEvidenceUrl, githubUrl } from "../components/shared";
 import type { LandingDict } from "./types";
 
 export const en: LandingDict = {
@@ -9,22 +9,22 @@ export const en: LandingDict = {
   },
 
   hero: {
-    headlineLine1: "Your next 10 hires",
-    headlineLine2: "won\u2019t be human.",
+    headlineLine1: "AI SDR agents",
+    headlineLine2: "under human control.",
     subheading:
-      "Multica is an open-source platform that turns coding agents into real teammates. Assign tasks, track progress, compound skills \u2014 manage your human + agent workforce in one place.",
-    cta: "Start free trial",
-    downloadDesktop: "Download Desktop",
-    worksWith: "Works with",
-    imageAlt: "Multica board view \u2014 issues managed by humans and agents",
+      "Cimeria is an AI agent control plane for sales development workflows. Capture leads, qualify fit, generate outreach, route handoffs, and keep the operator in the loop.",
+    cta: "Open app",
+    downloadDesktop: "View demo evidence",
+    worksWith: "SDR pipeline",
+    imageAlt: "Cimeria pipeline board with SDR agents and task status",
   },
 
   features: {
     teammates: {
-      label: "TEAMMATES",
-      title: "Assign to an agent like you\u2019d assign to a colleague",
+      label: "AGENTS",
+      title: "Five SDR agents, one visible pipeline",
       description:
-        "Agents aren\u2019t passive tools \u2014 they\u2019re active participants. They have profiles, report status, create issues, comment, and change status. Your activity feed shows humans and agents working side by side.",
+        "Hunter, Qualificador, Copywriter, Closer, and Nurture move work through a visible issue and lead workflow. Each handoff leaves evidence the operator can inspect.",
       cards: [
         {
           title: "Agents in the assignee picker",
@@ -44,10 +44,10 @@ export const en: LandingDict = {
       ],
     },
     autonomous: {
-      label: "AUTONOMOUS",
-      title: "Set it and forget it \u2014 agents work while you sleep",
+      label: "RUNTIME",
+      title: "Hermes keeps execution connected",
       description:
-        "Not just prompt-response. Full task lifecycle management: enqueue, claim, start, complete or fail. Agents report blockers proactively and you get real-time progress via WebSocket.",
+        "The runtime registers with the control plane, claims queued work, runs the assigned agent, and writes activity back into the product surface.",
       cards: [
         {
           title: "Complete task lifecycle",
@@ -67,10 +67,10 @@ export const en: LandingDict = {
       ],
     },
     skills: {
-      label: "SKILLS",
-      title: "Every solution becomes a reusable skill for the whole team",
+      label: "HANDOFFS",
+      title: "Approvals and handoffs stay visible",
       description:
-        "Skills are reusable capability definitions \u2014 code, config, and context bundled together. Write a skill once, and every agent on your team can use it. Your skill library compounds over time.",
+        "Automatic and manual handoff modes keep the SDR workflow moving without hiding control from the human operator.",
       cards: [
         {
           title: "Reusable skill definitions",
@@ -91,9 +91,9 @@ export const en: LandingDict = {
     },
     runtimes: {
       label: "RUNTIMES",
-      title: "One dashboard for all your compute",
+      title: "One dashboard for agent execution",
       description:
-        "Local daemons and cloud runtimes, managed from a single panel. Real-time monitoring of online/offline status, usage charts, and activity heatmaps. Auto-detects local CLIs \u2014 plug in and go.",
+        "Local and cloud runtimes are monitored from a single panel with online state, provider details, and task execution context.",
       cards: [
         {
           title: "Unified runtime panel",
@@ -108,7 +108,7 @@ export const en: LandingDict = {
         {
           title: "Auto-detection & plug-and-play",
           description:
-            "Multica detects available CLIs like Claude Code, Codex, OpenClaw, and OpenCode automatically. Connect a machine, and it\u2019s ready to work.",
+            "Cimeria detects runtime capabilities and keeps execution state visible to the control plane.",
         },
       ],
     },
@@ -116,8 +116,8 @@ export const en: LandingDict = {
 
   howItWorks: {
     label: "Get started",
-    headlineMain: "Hire your first AI employee",
-    headlineFaded: "in the next hour.",
+    headlineMain: "From lead capture",
+    headlineFaded: "to agent handoff.",
     steps: [
       {
         title: "Sign up & create your workspace",
@@ -125,19 +125,19 @@ export const en: LandingDict = {
           "Enter your email, verify with a code, and you\u2019re in. Your workspace is created automatically \u2014 no setup wizard, no configuration forms.",
       },
       {
-        title: "Install the CLI & connect your machine",
+        title: "Register Hermes runtime",
         description:
-          "Run multica setup to configure, authenticate, and start the daemon. It auto-detects Claude Code, Codex, OpenClaw, and OpenCode on your machine \u2014 plug in and go.",
+          "Connect a local or cloud runtime so queued agent work can be claimed and executed.",
       },
       {
-        title: "Create your first agent",
+        title: "Seed the SDR agents",
         description:
-          "Give it a name, write instructions, and attach skills. Agents automatically activate on assignment, on comment, or on mention.",
+          "Use Hunter, Qualificador, Copywriter, Closer, and Nurture as the canonical sales development workflow.",
       },
       {
-        title: "Assign an issue and watch it work",
+        title: "Import leads and inspect output",
         description:
-          "Pick your agent from the assignee dropdown \u2014 just like assigning to a teammate. The task is queued, claimed, and executed automatically. Watch progress in real time.",
+          "Lead activity, issue comments, approvals, and handoff state remain visible to the human operator.",
       },
     ],
     cta: "Get started",
@@ -145,17 +145,17 @@ export const en: LandingDict = {
   },
 
   openSource: {
-    label: "Open source",
-    headlineLine1: "Open source",
-    headlineLine2: "for all.",
+    label: "Portfolio build",
+    headlineLine1: "Real system,",
+    headlineLine2: "honest roadmap.",
     description:
-      "Multica is fully open source. Inspect every line, self-host on your own terms, and shape the future of human + agent collaboration.",
+      "This public repository shows the working control-plane foundation, demo evidence, and the next steps toward a SOTA AI SDR pipeline.",
     cta: "Star on GitHub",
     highlights: [
       {
         title: "Self-host anywhere",
         description:
-          "Run Multica on your own infrastructure. Docker Compose, single binary, or Kubernetes \u2014 your data never leaves your network.",
+          "Run Cimeria on your own infrastructure. Docker Compose, single binary, or Kubernetes \u2014 your data never leaves your network.",
       },
       {
         title: "No vendor lock-in",
@@ -180,30 +180,30 @@ export const en: LandingDict = {
     headline: "Questions & answers.",
     items: [
       {
-        question: "What coding agents does Multica support?",
+        question: "What coding agents does Cimeria support?",
         answer:
-          "Multica currently supports Claude Code, Codex, OpenClaw, and OpenCode out of the box. The daemon auto-detects whichever CLIs you have installed. Since it\u2019s open source, you can also add your own backends.",
+          "Cimeria currently supports Claude Code, Codex, OpenClaw, and OpenCode out of the box. The daemon auto-detects whichever CLIs you have installed. Since it\u2019s open source, you can also add your own backends.",
       },
       {
         question: "Do I need to self-host, or is there a cloud version?",
         answer:
-          "Both. You can self-host Multica on your own infrastructure with Docker Compose or Kubernetes, or use our hosted cloud version. Your data, your choice.",
+          "Both. You can self-host Cimeria on your own infrastructure with Docker Compose or Kubernetes, or use our hosted cloud version. Your data, your choice.",
       },
       {
         question:
           "How is this different from just using coding agents directly?",
         answer:
-          "Coding agents are great at executing. Multica adds the management layer: task queues, team coordination, skill reuse, runtime monitoring, and a unified view of what every agent is doing. Think of it as the project manager for your agents.",
+          "Coding agents are great at executing. Cimeria adds the management layer: task queues, team coordination, skill reuse, runtime monitoring, and a unified view of what every agent is doing. Think of it as the project manager for your agents.",
       },
       {
         question: "Can agents work on long-running tasks autonomously?",
         answer:
-          "Yes. Multica manages the full task lifecycle \u2014 enqueue, claim, execute, complete or fail. Agents report blockers proactively and stream progress in real time. You can check in whenever you want or let them run overnight.",
+          "Yes. Cimeria manages the full task lifecycle \u2014 enqueue, claim, execute, complete or fail. Agents report blockers proactively and stream progress in real time. You can check in whenever you want or let them run overnight.",
       },
       {
         question: "Is my code safe? Where does agent execution happen?",
         answer:
-          "Agent execution happens on your machine (local daemon) or your own cloud infrastructure. Code never passes through Multica servers. The platform only coordinates task state and broadcasts events.",
+          "Agent execution happens on your machine (local daemon) or your own cloud infrastructure. Code never passes through Cimeria servers. The platform only coordinates task state and broadcasts events.",
       },
       {
         question: "How many agents can I run?",
@@ -215,7 +215,7 @@ export const en: LandingDict = {
 
   footer: {
     tagline:
-      "Project management for human + agent teams. Open source, self-hostable, built for the future of work.",
+      "AI agent control plane and SDR pipeline for lead capture, qualification, outreach, handoff, and human review.",
     cta: "Get started",
     groups: {
       product: {
@@ -224,7 +224,7 @@ export const en: LandingDict = {
           { label: "Features", href: "#features" },
           { label: "How it Works", href: "#how-it-works" },
           { label: "Changelog", href: "/changelog" },
-          { label: "Desktop", href: "https://github.com/multica-ai/multica/releases/latest" },
+          { label: "Demo Evidence", href: demoEvidenceUrl },
         ],
       },
       resources: {
@@ -232,7 +232,7 @@ export const en: LandingDict = {
         links: [
           { label: "Documentation", href: githubUrl },
           { label: "API", href: githubUrl },
-          { label: "X (Twitter)", href: "https://x.com/MulticaAI" },
+          { label: "Roadmap", href: githubUrl },
         ],
       },
       company: {
@@ -244,13 +244,13 @@ export const en: LandingDict = {
         ],
       },
     },
-    copyright: "\u00a9 {year} Multica. All rights reserved.",
+    copyright: "\u00a9 {year} Cimeria Labs. All rights reserved.",
   },
 
   about: {
-    title: "About Multica",
+    title: "About Cimeria",
     nameLine: {
-      prefix: "Multica \u2014 ",
+      prefix: "Cimeria \u2014 ",
       mul: "Mul",
       tiplexed: "tiplexed ",
       i: "I",
@@ -262,8 +262,8 @@ export const en: LandingDict = {
     },
     paragraphs: [
       "The name is a nod to Multics, the pioneering operating system of the 1960s that introduced time-sharing \u2014 letting multiple users share a single machine as if each had it to themselves. Unix was born as a deliberate simplification of Multics: one user, one task, one elegant philosophy.",
-      "We think the same inflection is happening again. For decades, software teams have been single-threaded \u2014 one engineer, one task, one context switch at a time. AI agents change that equation. Multica brings time-sharing back, but for an era where the \u201cusers\u201d multiplexing the system are both humans and autonomous agents.",
-      "In Multica, agents are first-class teammates. They get assigned issues, report progress, raise blockers, and ship code \u2014 just like their human colleagues. The assignee picker, the activity timeline, the task lifecycle, and the runtime infrastructure are all built around this idea from day one.",
+      "We think the same inflection is happening again. For decades, software teams have been single-threaded \u2014 one engineer, one task, one context switch at a time. AI agents change that equation. Cimeria brings time-sharing back, but for an era where the \u201cusers\u201d multiplexing the system are both humans and autonomous agents.",
+      "In Cimeria, agents are first-class teammates. They get assigned issues, report progress, raise blockers, and ship code \u2014 just like their human colleagues. The assignee picker, the activity timeline, the task lifecycle, and the runtime infrastructure are all built around this idea from day one.",
       "Like Multics before it, the bet is on multiplexing: a small team shouldn\u2019t feel small. With the right system, two engineers and a fleet of agents can move like twenty.",
       "The platform is fully open source and self-hostable. Your data stays on your infrastructure. Inspect every line, extend the API, bring your own LLM providers, and contribute back to the community.",
     ],
@@ -272,7 +272,7 @@ export const en: LandingDict = {
 
   changelog: {
     title: "Changelog",
-    subtitle: "New updates and improvements to Multica.",
+    subtitle: "New updates and improvements to Cimeria.",
     categories: {
       features: "New Features",
       improvements: "Improvements",
@@ -375,7 +375,7 @@ export const en: LandingDict = {
         title: "One-Click Setup, Self-Hosting & Stability",
         changes: [],
         features: [
-          "One-click install & setup — `curl | bash` installs CLI, `--with-server` bootstraps full self-hosting, `multica setup` configures your environment",
+          "One-click install and setup for local development and self-hosting",
           "Self-hosted storage — local file fallback when S3 is unavailable, plus custom S3 endpoint support (MinIO)",
           "Inline property editing (priority, status, lead) on project list page",
         ],
@@ -521,7 +521,7 @@ export const en: LandingDict = {
           "Load all open issues without pagination limit; closed issues paginate on scroll",
           "JWT and CloudFront cookie expiration extended from 72 hours to 30 days",
           "Remember last selected workspace after re-login",
-          "Daemon ensures multica CLI is on PATH in agent task environment",
+          "Daemon ensures the CLI is on PATH in agent task environment",
           "PR template and CLI install guide for agent-driven setup",
         ],
       },
