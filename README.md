@@ -33,6 +33,14 @@ The canonical SDR pipeline has five agents:
 - SDR seed/pipeline code for Hunter, Qualificador, Copywriter, Closer, and Nurture.
 - Lead import and lead activity surfaces under active development.
 
+## Demo Evidence
+
+Public demo media is redacted to remove workspace URLs, test account data, and private environment details.
+
+![Cimeria pipeline board](docs/assets/demo/swota-01-pipeline-board.png)
+
+More screenshots and a short demo clip: [docs/demo-evidence.md](docs/demo-evidence.md).
+
 ## Architecture
 
 ```mermaid
