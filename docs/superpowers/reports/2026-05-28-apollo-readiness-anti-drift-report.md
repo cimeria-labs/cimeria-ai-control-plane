@@ -1,18 +1,18 @@
 # Apollo Readiness Anti-Drift Report
 
 Date: 2026-05-28
-Status: in progress
+Status: NO-GO
 Scope: analysis only; no Apollo implementation; no product code changes; no real lead email sending.
 
 ## Executive Summary
 
-- Overall status: in progress
-- Login fixed: not tested
-- Workspace creation tested: not tested
-- Runtime/Hermes tested: not tested
-- Leads/issues tested: not tested
-- Apollo readiness: not tested
-- Safe to start Apollo implementation: pending
+- Overall status: NO-GO
+- Login fixed: `/auth/send-code` public smoke test passes; `/auth/verify-code` was not completed because the verification code was not available in-session.
+- Workspace creation tested: blocked by unavailable authenticated session.
+- Runtime/Hermes tested: partially observed; active daemon and task claims exist, but idle polling is noisy.
+- Leads/issues tested: unauthenticated boundary passes; authenticated pages and no-send lead flow were blocked by unavailable authenticated session.
+- Apollo readiness: blocked by missing API key, missing connector/dry-run path, schema drift, and provider/import inconsistencies.
+- Safe to start Apollo implementation: no; fix the blockers below first.
 
 ## Repo and GitHub Baseline
 
@@ -81,7 +81,7 @@ Scope: analysis only; no Apollo implementation; no product code changes; no real
 | APOLLO_API_KEY configured in intended env | BLOCKED | `APOLLO_API_KEY` is missing from the active backend process env and checked VM env files. No live Apollo API call was attempted. |
 | API access plan/limits understood | WARN | Official Apollo docs confirm People API Search uses `POST https://api.apollo.io/api/v1/mixed_people/api_search`, is for net-new people, does not return emails/phones, and requires a master API key. Enrichment is separate and credit-bearing. Usage/rate-limit inspection is available via `POST https://api.apollo.io/api/v1/usage_stats/api_usage_stats`, but also requires a master API key. Sources: https://docs.apollo.io/reference/people-api-search, https://docs.apollo.io/reference/people-enrichment, https://docs.apollo.io/reference/bulk-people-enrichment, https://docs.apollo.io/reference/view-api-usage-stats. |
 | Secret remains server-side | WARN | No Apollo connector exists yet, so there is no current client-side leak. Future implementation must keep `APOLLO_API_KEY` backend-only and never store it in `lead_source.config`, frontend state, demo assets, logs, or repo files. |
-| Source config can store non-secret filters | WARN | `lead_source` supports `provider`, `config`, `auto_approve`, and `enrichment_enabled`; `validLeadSourceProviders` includes `apollo`. However, the public migrations do not create the required lead source/import tables, so this is not reproducible from a clean public migration run. |
+| Source config can store non-secret filters | WARN | `lead_source` supports `provider`, `config`, `auto_approve`, and `enrichment_enabled`; `validLeadSourceProviders` includes `apollo`. However, public migrations do not create the required lead source/import tables, and `CreateLeadImportBatch` currently allows only `csv`, `api`, `form`, and `manual`, so an Apollo batch would be coerced to `api`. |
 | Dry-run/import approval path exists or is missing | BLOCKED | There are curator rules and bulk approve/reject actions after leads exist, plus source-level `auto_approve`, but no Apollo search preview/dry-run endpoint was found that lets a human approve candidates before lead creation. This is required before Apollo import. |
 | Enrichment is separable from search | WARN | Apollo's API separates search from people/bulk enrichment, and Cimeria has an `enrichment_enabled` source flag. The product still lacks an Apollo connector, enrichment job, webhook/idempotency handling for waterfall, and no-send approval gate. |
 
@@ -89,30 +89,52 @@ Scope: analysis only; no Apollo implementation; no product code changes; no real
 
 ### Blockers
 
-- None recorded yet.
+- Active deployed backend is not Git-clean or aligned with the public repo: VM runs `/home/opc/swota/multica-main` on `ferako/swota` with many dirty/untracked changes.
+- Public migrations do not reproduce the schema required by generated code and deployed DB for `lead_source`, `lead_import_batch`, `lead_curator_rule`, and enriched `lead` columns.
+- Authenticated workspace, agents, leads, issues, and no-send lead flow could not be validated without the verification code.
+- `APOLLO_API_KEY` is missing in the intended runtime env, so live Apollo validation cannot run.
+- No Apollo server-side connector or search preview/dry-run path exists before lead creation.
+- SDR pipeline advancement is based on completed agent name, not structured agent decisions, so invalid or disqualified leads can keep moving.
 
 ### Bugs
 
-- None recorded yet.
+- `CreateLeadImportBatch` provider validation omits `apollo`, while `lead_source` accepts `apollo`; Apollo import batches would lose provider identity unless this is fixed.
+- `go test ./...` fails on Windows-specific symlink/path/shell/redaction tests even though handler and SDR packages passed.
+- Runtime/daemon idle behavior is noisy, with repeated heartbeat and task-claim activity while no user task is being executed.
 
 ### Integration Prerequisites
 
-- None recorded yet.
+- Pick one source of truth for deploy: public repo branch -> clean build -> VM pull/deploy, or explicitly document the VM-only private source until it is reconciled.
+- Restore or recreate migrations for the schema already present in the VM database and required by generated code.
+- Add `APOLLO_API_KEY` only to the backend runtime environment when ready; never commit it or store it in source config.
+- Implement Apollo server-side usage check, search preview, candidate cache, import approval, dedupe, and import batch tracking before creating leads.
+- Keep enrichment separate from search, controlled by `enrichment_enabled` and a human-approved no-send gate.
+- Preserve external Apollo IDs and search/enrichment metadata for dedupe, audit, and re-run safety.
 
 ### SDR Quality Improvements
 
-- None recorded yet.
+- Enforce structured agent outputs with decision, confidence, rationale, disqualification reason, next action, and human approval requirement.
+- Add stop gates after Hunter and Qualificador so rejected, invalid, unsafe, or nurture-only leads do not advance blindly.
+- Add no-send verification mode that produces copy, qualification, and closing material without external email delivery.
+- Add evaluator fixtures for lead quality, hallucinated company data, tone, and compliance-safe outreach.
 
 ### Observability Improvements
 
-- None recorded yet.
+- Reduce daemon polling noise with sleep-until-work or longer idle backoff.
+- Add request IDs to Apollo import/enrichment events, batch logs, and lead curation actions.
+- Avoid broad VM journal reads in future audits because system logs can include infrastructure metadata unrelated to the app.
+- Add smoke endpoints or scripts for login, workspace creation, runtime registration, lead creation, Hunter issue creation, and no-send flow.
 
 ### SOTA Opportunities
 
-- None recorded yet.
+- Lead Intelligence Packet: one normalized profile per lead with source evidence, enrichment confidence, ICP score, objections, and next-best action.
+- Waterfall enrichment orchestration: Apollo first, then optional Clay or other enrichers only when data is missing or confidence is low.
+- Approval-first SDR cockpit: human reviews candidate leads, generated copy, and send readiness before any external outreach.
+- Cost and quota governor for Apollo credits, enrichment calls, LLM tokens, and daemon work.
+- Eval dashboard for SDR agents: conversion proxy, lead quality score, hallucination checks, compliance flags, and material quality rubric.
 
 ## Final Decision
 
-Decision: pending
+Decision: NO-GO
 
-Allowed final values: GO, NO-GO, BLOCKED.
+NO-GO: code/config/reproducibility fixes are required before Apollo integration and full SDR/Hermes verification can safely resume.
