@@ -54,14 +54,14 @@ Scope: analysis only; no Apollo implementation; no product code changes; no real
 | --- | --- | --- |
 | POST /auth/send-code public | PASS | VM `curl` to `https://app.cimeria.online/auth/send-code` returned HTTP 200 with `{"message":"Verification code sent"}` on 2026-05-28 06:19 UTC. |
 | POST /auth/send-code internal | PASS/WARN | VM `curl` to `http://127.0.0.1:8080/auth/send-code` reached the backend and returned HTTP 429 `please wait before requesting another code` immediately after the public request, which confirms routing and rate limiting. Ports `8081`, `8787`, and `9090` were not serving this route. |
-| POST /auth/verify-code | pending | pending |
-| Workspace page/reachability | pending | pending |
-| Runtime registration/status | pending | pending |
-| Agents list | pending | pending |
-| Leads page/API | pending | pending |
-| Issues page/API | pending | pending |
-| Lead creates Hunter issue | pending | pending |
-| Runtime idle noise | pending | pending |
+| POST /auth/verify-code | BLOCKED | Verification code was sent to `developercimerio@gmail.com`, but the code was not available in this session. JWT/session token was not obtained. |
+| Workspace page/reachability | WARN/BLOCKED | Public frontend root `https://app.cimeria.online` returned HTTP 200 and rendered the Cimeria landing/login entry. Authenticated workspace pages were blocked by unavailable verification code. |
+| Runtime registration/status | WARN | VM logs show daemon heartbeats and runtime task claims returning HTTP 200, and `multica daemon start --foreground` is active. However, many runtime IDs are polling/claiming, so idle noise remains a warning. |
+| Agents list | BLOCKED | Requires authenticated workspace session; blocked by unavailable verification code. |
+| Leads page/API | BLOCKED | Unauthenticated `/api/workspaces` returned expected HTTP 401. Authenticated leads API/page validation blocked by unavailable verification code. |
+| Issues page/API | BLOCKED | Requires authenticated workspace session; blocked by unavailable verification code. |
+| Lead creates Hunter issue | BLOCKED | No no-send test lead was created because authenticated session was unavailable. |
+| Runtime idle noise | WARN | Recent app logs show bursts of daemon heartbeats and repeated `tasks/claim` calls across multiple runtime IDs every few seconds. This does not break auth, but it is noisy. |
 
 ## Schema and Pipeline Readiness
 
