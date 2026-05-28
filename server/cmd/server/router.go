@@ -15,6 +15,7 @@ import (
 	"github.com/multica-ai/multica/server/internal/auth"
 	"github.com/multica-ai/multica/server/internal/events"
 	"github.com/multica-ai/multica/server/internal/handler"
+	"github.com/multica-ai/multica/server/internal/integrations/apollo"
 	"github.com/multica-ai/multica/server/internal/middleware"
 	"github.com/multica-ai/multica/server/internal/realtime"
 	"github.com/multica-ai/multica/server/internal/service"
@@ -71,6 +72,7 @@ func NewRouter(pool *pgxpool.Pool, hub *realtime.Hub, bus *events.Bus) chi.Route
 
 	cfSigner := auth.NewCloudFrontSignerFromEnv()
 	h := handler.New(queries, pool, hub, bus, emailSvc, store, cfSigner)
+	h.Apollo = apollo.NewClientFromEnv()
 
 	r := chi.NewRouter()
 
@@ -257,6 +259,14 @@ func NewRouter(pool *pgxpool.Pool, hub *realtime.Hub, bus *events.Bus) chi.Route
 					r.Get("/", h.GetLeadImportBatch)
 					r.Patch("/", h.UpdateLeadImportBatch)
 				})
+			})
+
+			// Apollo no-send lead sourcing
+			r.Route("/api/integrations/apollo", func(r chi.Router) {
+				r.Get("/status", h.ApolloStatus)
+				r.Post("/search-preview", h.ApolloSearchPreview)
+				r.Post("/enrich", h.ApolloEnrichCandidates)
+				r.Post("/import-approved", h.ApolloImportApproved)
 			})
 
 			// Lead curator rules

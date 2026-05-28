@@ -13,6 +13,7 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/multica-ai/multica/server/internal/auth"
 	"github.com/multica-ai/multica/server/internal/events"
+	"github.com/multica-ai/multica/server/internal/integrations/apollo"
 	"github.com/multica-ai/multica/server/internal/middleware"
 	"github.com/multica-ai/multica/server/internal/realtime"
 	"github.com/multica-ai/multica/server/internal/service"
@@ -31,10 +32,18 @@ type dbExecutor interface {
 	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
 }
 
+type apolloClient interface {
+	Configured() bool
+	SearchPeople(ctx context.Context, req apollo.SearchRequest) (apollo.SearchResponse, error)
+	BulkEnrichPeople(ctx context.Context, req apollo.BulkEnrichRequest) (apollo.BulkEnrichResponse, error)
+	UsageStats(ctx context.Context) (apollo.UsageStatsResponse, error)
+}
+
 type Handler struct {
 	Queries          *db.Queries
 	DB               dbExecutor
 	TxStarter        txStarter
+	Apollo           apolloClient
 	Hub              *realtime.Hub
 	Bus              *events.Bus
 	TaskService      *service.TaskService
