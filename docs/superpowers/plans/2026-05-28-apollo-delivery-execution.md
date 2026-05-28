@@ -143,7 +143,7 @@ Add Apollo backend client and tests.
 Expected:
 
 - `go test ./internal/integrations/apollo -count=1` passes.
-- Client uses bearer auth.
+- Client uses Apollo's `X-Api-Key` header.
 - Bulk enrichment rejects more than 10 people.
 - Phone, personal email, and waterfall flags stay disabled.
 - Commit: `feat: add backend Apollo client`.

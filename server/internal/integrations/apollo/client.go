@@ -142,7 +142,8 @@ func (c *Client) doJSON(ctx context.Context, method, path string, values url.Val
 	}
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+c.cfg.APIKey)
+	req.Header.Set("Cache-Control", "no-cache")
+	req.Header.Set("X-Api-Key", c.cfg.APIKey)
 
 	res, err := c.http.Do(req)
 	if err != nil {

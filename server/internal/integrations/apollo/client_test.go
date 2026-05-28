@@ -7,12 +7,12 @@ import (
 	"testing"
 )
 
-func TestSearchPeopleUsesBearerAuthAndFilters(t *testing.T) {
+func TestSearchPeopleUsesAPIKeyHeaderAndFilters(t *testing.T) {
 	var gotPath string
-	var gotAuth string
+	var gotAPIKey string
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		gotPath = r.URL.Path
-		gotAuth = r.Header.Get("Authorization")
+		gotAPIKey = r.Header.Get("X-Api-Key")
 		if r.URL.Query().Get("person_titles[]") != "Founder" {
 			t.Fatalf("missing person_titles filter: %s", r.URL.RawQuery)
 		}
@@ -44,8 +44,8 @@ func TestSearchPeopleUsesBearerAuthAndFilters(t *testing.T) {
 	if gotPath != "/api/v1/mixed_people/api_search" {
 		t.Fatalf("path=%s", gotPath)
 	}
-	if gotAuth != "Bearer test-key" {
-		t.Fatalf("auth header=%q", gotAuth)
+	if gotAPIKey != "test-key" {
+		t.Fatalf("X-Api-Key header=%q", gotAPIKey)
 	}
 	if len(resp.People) != 1 || resp.People[0].ID != "person-1" {
 		t.Fatalf("unexpected response: %#v", resp.People)
