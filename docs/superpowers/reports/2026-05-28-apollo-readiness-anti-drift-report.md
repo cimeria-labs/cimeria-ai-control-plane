@@ -67,12 +67,12 @@ Scope: analysis only; no Apollo implementation; no product code changes; no real
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Migrations match generated code expectations | pending | pending |
-| lead table supports current handlers | pending | pending |
-| lead_source table exists where handlers expect it | pending | pending |
-| lead_import_batch table exists where handlers expect it | pending | pending |
-| Pipeline gates rejected/invalid leads | pending | pending |
-| Agent outputs are structured enough for decisions | pending | pending |
+| Migrations match generated code expectations | BLOCKED | Public migrations create `lead` and `lead_score_rule`, but generated code and handlers reference `lead_source`, `lead_import_batch`, `lead_curator_rule`, and extra `lead` columns such as `budget`, `authority`, `company_size`, `icp_fit`, `import_batch_id`, `curated_at`, and `curated_by`. VM database contains these objects, so deployed DB has schema not reproducible from public migrations. |
+| lead table supports current handlers | BLOCKED | VM database `lead` table includes the generated-code columns, but public `054_leads.up.sql` does not. A clean public migration run would not support the current generated `Lead` model and lead queries. |
+| lead_source table exists where handlers expect it | BLOCKED | VM database contains `lead_source`, and handlers/routes/queries exist, but public migrations do not create the table. |
+| lead_import_batch table exists where handlers expect it | BLOCKED | VM database contains `lead_import_batch`, and handlers/routes/queries exist, but public migrations do not create the table. |
+| Pipeline gates rejected/invalid leads | BLOCKED | `onLeadCreated` skips leads already marked `rejected`, but `onTaskCompleted` advances Hunter -> Qualificador -> Copywriter -> Closer -> Nurture based only on completed agent name. It does not parse agent output or stop on Disqualified/Nurture/invalid/unsafe decisions. |
+| Agent outputs are structured enough for decisions | WARN | Agent prompts request structured Markdown sections, but there is no enforced JSON schema with decision, confidence, rationale, next action, and human approval fields for programmatic gating. |
 
 ## Apollo Readiness
 
