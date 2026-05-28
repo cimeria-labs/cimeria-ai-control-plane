@@ -32,6 +32,7 @@ The canonical SDR pipeline has five agents:
 - Hermes-style daemon/runtime task loop: issues become tasks, runtimes claim work, and agent output is written back to the product.
 - SDR seed/pipeline code for Hunter, Qualificador, Copywriter, Closer, and Nurture.
 - Lead import and lead activity surfaces under active development.
+- Apollo no-send connector foundation: server-side API key handling, search preview, enrichment/import approval endpoints, candidate storage, and Leads-page UI entry point.
 
 ## Demo Evidence
 
@@ -113,6 +114,7 @@ Cimeria is an active portfolio-grade AI engineering project. The current public 
 Current focus:
 
 - Keep login, workspace creation, runtime registration, and issue/task dispatch stable.
+- Validate Apollo live data onboarding end to end with no-send safeguards before any external outreach.
 - Improve SDR pipeline decision quality and stop conditions.
 - Add better observability, evaluation, and human approval flows.
 

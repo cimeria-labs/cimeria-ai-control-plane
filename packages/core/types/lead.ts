@@ -83,6 +83,75 @@ export interface ImportLeadsResponse {
   leads: Lead[];
 }
 
+export interface ApolloStatusResponse {
+  configured: boolean;
+}
+
+export interface ApolloSearchPreviewRequest {
+  titles: string[];
+  person_locations: string[];
+  organization_locations: string[];
+  organization_keywords: string[];
+  seniorities: string[];
+  limit: number;
+}
+
+export type ApolloCandidateStatus =
+  | "preview"
+  | "approved"
+  | "enriched"
+  | "imported"
+  | "duplicate"
+  | "rejected"
+  | "missing_email"
+  | "failed";
+
+export interface ApolloCandidate {
+  id: string;
+  batch_id: string;
+  external_id: string;
+  email: string | null;
+  email_status: string | null;
+  name: string;
+  company: string;
+  title: string;
+  domain: string;
+  linkedin_url: string;
+  status: ApolloCandidateStatus;
+  score: number;
+  payload: Record<string, unknown>;
+}
+
+export interface ApolloSearchPreviewResponse {
+  batch_id: string;
+  candidates: ApolloCandidate[];
+}
+
+export interface ApolloCandidateActionRequest {
+  batch_id: string;
+  candidate_ids: string[];
+}
+
+export interface ApolloEnrichResponse {
+  batch_id: string;
+  candidates: ApolloCandidate[];
+}
+
+export interface ApolloImportRequest {
+  batch_id: string;
+  candidate_ids: string[];
+  no_send: true;
+}
+
+export interface ApolloImportResponse {
+  batch_id: string;
+  imported: number;
+  skipped: number;
+  missing_email: number;
+  duplicates: number;
+  leads: Lead[];
+}
+
 export type LeadScoreEventType =
   | "opened"
   | "clicked"

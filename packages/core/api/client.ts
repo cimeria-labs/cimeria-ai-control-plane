@@ -69,6 +69,13 @@ import type {
   ListLeadsParams,
   ListLeadsResponse,
   ImportLeadsResponse,
+  ApolloStatusResponse,
+  ApolloSearchPreviewRequest,
+  ApolloSearchPreviewResponse,
+  ApolloCandidateActionRequest,
+  ApolloEnrichResponse,
+  ApolloImportRequest,
+  ApolloImportResponse,
   LeadScoreRule,
   UpsertLeadScoreRuleRequest,
 } from "../types";
@@ -327,6 +334,31 @@ export class ApiClient {
       method: "POST",
       headers: { "Content-Type": "text/csv" },
       body: csv,
+    });
+  }
+
+  async getApolloStatus(): Promise<ApolloStatusResponse> {
+    return this.fetch("/api/integrations/apollo/status");
+  }
+
+  async searchApolloPreview(data: ApolloSearchPreviewRequest): Promise<ApolloSearchPreviewResponse> {
+    return this.fetch("/api/integrations/apollo/search-preview", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async enrichApolloCandidates(data: ApolloCandidateActionRequest): Promise<ApolloEnrichResponse> {
+    return this.fetch("/api/integrations/apollo/enrich", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async importApprovedApolloCandidates(data: ApolloImportRequest): Promise<ApolloImportResponse> {
+    return this.fetch("/api/integrations/apollo/import-approved", {
+      method: "POST",
+      body: JSON.stringify(data),
     });
   }
 

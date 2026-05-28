@@ -3,6 +3,9 @@ import { api } from "../api";
 import { useWorkspaceId } from "../hooks";
 import type {
   CreateLeadRequest,
+  ApolloCandidateActionRequest,
+  ApolloImportRequest,
+  ApolloSearchPreviewRequest,
   Lead,
   ListLeadsResponse,
   UpdateLeadRequest,
@@ -82,6 +85,29 @@ export function useImportLeadsCsv() {
   const wsId = useWorkspaceId();
   return useMutation({
     mutationFn: (csv: string) => api.importLeadsCsv(csv),
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: leadKeys.all(wsId) });
+    },
+  });
+}
+
+export function useSearchApolloPreview() {
+  return useMutation({
+    mutationFn: (data: ApolloSearchPreviewRequest) => api.searchApolloPreview(data),
+  });
+}
+
+export function useEnrichApolloCandidates() {
+  return useMutation({
+    mutationFn: (data: ApolloCandidateActionRequest) => api.enrichApolloCandidates(data),
+  });
+}
+
+export function useImportApprovedApolloCandidates() {
+  const qc = useQueryClient();
+  const wsId = useWorkspaceId();
+  return useMutation({
+    mutationFn: (data: ApolloImportRequest) => api.importApprovedApolloCandidates(data),
     onSettled: () => {
       qc.invalidateQueries({ queryKey: leadKeys.all(wsId) });
     },

@@ -83,7 +83,7 @@ ON CONFLICT (workspace_id, email) DO UPDATE SET
     title = COALESCE(NULLIF(EXCLUDED.title, ''), lead.title),
     source = EXCLUDED.source,
     updated_at = now()
-RETURNING id, workspace_id, email, name, company, title, source, status, score, dynamic_score, assignee_type, assignee_id, pipeline_id, state_machine_status, last_event, metadata, created_at, updated_at, budget, authority, need, timeline, company_size, industry, pain_points, icp_fit, lead_temperature, import_batch_id, curated_at, curated_by
+RETURNING id, workspace_id, email, name, company, title, source, status, score, dynamic_score, assignee_type, assignee_id, pipeline_id, state_machine_status, last_event, metadata, created_at, updated_at, budget, authority, need, timeline, company_size, industry, pain_points, icp_fit, lead_temperature, curated_at, curated_by, import_batch_id
 `
 
 type CreateLeadParams struct {
@@ -169,9 +169,9 @@ func (q *Queries) CreateLead(ctx context.Context, arg CreateLeadParams) (Lead, e
 		&i.PainPoints,
 		&i.IcpFit,
 		&i.LeadTemperature,
-		&i.ImportBatchID,
 		&i.CuratedAt,
 		&i.CuratedBy,
+		&i.ImportBatchID,
 	)
 	return i, err
 }
@@ -192,7 +192,7 @@ func (q *Queries) DeleteLead(ctx context.Context, arg DeleteLeadParams) error {
 }
 
 const getLead = `-- name: GetLead :one
-SELECT id, workspace_id, email, name, company, title, source, status, score, dynamic_score, assignee_type, assignee_id, pipeline_id, state_machine_status, last_event, metadata, created_at, updated_at, budget, authority, need, timeline, company_size, industry, pain_points, icp_fit, lead_temperature, import_batch_id, curated_at, curated_by FROM lead
+SELECT id, workspace_id, email, name, company, title, source, status, score, dynamic_score, assignee_type, assignee_id, pipeline_id, state_machine_status, last_event, metadata, created_at, updated_at, budget, authority, need, timeline, company_size, industry, pain_points, icp_fit, lead_temperature, curated_at, curated_by, import_batch_id FROM lead
 WHERE id = $1
 `
 
@@ -227,15 +227,15 @@ func (q *Queries) GetLead(ctx context.Context, id pgtype.UUID) (Lead, error) {
 		&i.PainPoints,
 		&i.IcpFit,
 		&i.LeadTemperature,
-		&i.ImportBatchID,
 		&i.CuratedAt,
 		&i.CuratedBy,
+		&i.ImportBatchID,
 	)
 	return i, err
 }
 
 const getLeadInWorkspace = `-- name: GetLeadInWorkspace :one
-SELECT id, workspace_id, email, name, company, title, source, status, score, dynamic_score, assignee_type, assignee_id, pipeline_id, state_machine_status, last_event, metadata, created_at, updated_at, budget, authority, need, timeline, company_size, industry, pain_points, icp_fit, lead_temperature, import_batch_id, curated_at, curated_by FROM lead
+SELECT id, workspace_id, email, name, company, title, source, status, score, dynamic_score, assignee_type, assignee_id, pipeline_id, state_machine_status, last_event, metadata, created_at, updated_at, budget, authority, need, timeline, company_size, industry, pain_points, icp_fit, lead_temperature, curated_at, curated_by, import_batch_id FROM lead
 WHERE id = $1 AND workspace_id = $2
 `
 
@@ -275,15 +275,15 @@ func (q *Queries) GetLeadInWorkspace(ctx context.Context, arg GetLeadInWorkspace
 		&i.PainPoints,
 		&i.IcpFit,
 		&i.LeadTemperature,
-		&i.ImportBatchID,
 		&i.CuratedAt,
 		&i.CuratedBy,
+		&i.ImportBatchID,
 	)
 	return i, err
 }
 
 const listLeads = `-- name: ListLeads :many
-SELECT id, workspace_id, email, name, company, title, source, status, score, dynamic_score, assignee_type, assignee_id, pipeline_id, state_machine_status, last_event, metadata, created_at, updated_at, budget, authority, need, timeline, company_size, industry, pain_points, icp_fit, lead_temperature, import_batch_id, curated_at, curated_by FROM lead
+SELECT id, workspace_id, email, name, company, title, source, status, score, dynamic_score, assignee_type, assignee_id, pipeline_id, state_machine_status, last_event, metadata, created_at, updated_at, budget, authority, need, timeline, company_size, industry, pain_points, icp_fit, lead_temperature, curated_at, curated_by, import_batch_id FROM lead
 WHERE workspace_id = $1
   AND ($4::text IS NULL OR status = $4)
 ORDER BY updated_at DESC
@@ -339,9 +339,9 @@ func (q *Queries) ListLeads(ctx context.Context, arg ListLeadsParams) ([]Lead, e
 			&i.PainPoints,
 			&i.IcpFit,
 			&i.LeadTemperature,
-			&i.ImportBatchID,
 			&i.CuratedAt,
 			&i.CuratedBy,
+			&i.ImportBatchID,
 		); err != nil {
 			return nil, err
 		}
@@ -395,7 +395,7 @@ UPDATE lead SET
     lead_temperature = COALESCE($25, lead_temperature),
     updated_at = now()
 WHERE id = $1 AND workspace_id = $2
-RETURNING id, workspace_id, email, name, company, title, source, status, score, dynamic_score, assignee_type, assignee_id, pipeline_id, state_machine_status, last_event, metadata, created_at, updated_at, budget, authority, need, timeline, company_size, industry, pain_points, icp_fit, lead_temperature, import_batch_id, curated_at, curated_by
+RETURNING id, workspace_id, email, name, company, title, source, status, score, dynamic_score, assignee_type, assignee_id, pipeline_id, state_machine_status, last_event, metadata, created_at, updated_at, budget, authority, need, timeline, company_size, industry, pain_points, icp_fit, lead_temperature, curated_at, curated_by, import_batch_id
 `
 
 type UpdateLeadParams struct {
@@ -483,9 +483,9 @@ func (q *Queries) UpdateLead(ctx context.Context, arg UpdateLeadParams) (Lead, e
 		&i.PainPoints,
 		&i.IcpFit,
 		&i.LeadTemperature,
-		&i.ImportBatchID,
 		&i.CuratedAt,
 		&i.CuratedBy,
+		&i.ImportBatchID,
 	)
 	return i, err
 }
@@ -498,7 +498,7 @@ UPDATE lead SET
     last_event = COALESCE($4, last_event),
     updated_at = now()
 WHERE id = $1 AND workspace_id = $2
-RETURNING id, workspace_id, email, name, company, title, source, status, score, dynamic_score, assignee_type, assignee_id, pipeline_id, state_machine_status, last_event, metadata, created_at, updated_at, budget, authority, need, timeline, company_size, industry, pain_points, icp_fit, lead_temperature, import_batch_id, curated_at, curated_by
+RETURNING id, workspace_id, email, name, company, title, source, status, score, dynamic_score, assignee_type, assignee_id, pipeline_id, state_machine_status, last_event, metadata, created_at, updated_at, budget, authority, need, timeline, company_size, industry, pain_points, icp_fit, lead_temperature, curated_at, curated_by, import_batch_id
 `
 
 type UpdateLeadDynamicScoreParams struct {
@@ -544,9 +544,9 @@ func (q *Queries) UpdateLeadDynamicScore(ctx context.Context, arg UpdateLeadDyna
 		&i.PainPoints,
 		&i.IcpFit,
 		&i.LeadTemperature,
-		&i.ImportBatchID,
 		&i.CuratedAt,
 		&i.CuratedBy,
+		&i.ImportBatchID,
 	)
 	return i, err
 }

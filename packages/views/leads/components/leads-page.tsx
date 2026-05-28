@@ -2,13 +2,20 @@
 
 import { useMemo, useState, type FormEvent } from "react";
 import { toast } from "sonner";
-import { Check, ChevronRight, Flame, Plus, Upload, UsersRound } from "lucide-react";
+import { Check, ChevronRight, Flame, Plus, Search, ShieldCheck, Sparkles, Upload, UsersRound } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { leadListOptions } from "@multica/core/leads/queries";
-import { useCreateLead, useImportLeadsCsv, useUpdateLead } from "@multica/core/leads/mutations";
+import { apolloStatusOptions, leadListOptions } from "@multica/core/leads/queries";
+import {
+  useCreateLead,
+  useEnrichApolloCandidates,
+  useImportApprovedApolloCandidates,
+  useImportLeadsCsv,
+  useSearchApolloPreview,
+  useUpdateLead,
+} from "@multica/core/leads/mutations";
 import { useCurrentWorkspace } from "@multica/core/paths";
 import { useWorkspaceId } from "@multica/core/hooks";
-import type { Lead, LeadStatus } from "@multica/core/types";
+import type { ApolloCandidate, Lead, LeadStatus } from "@multica/core/types";
 import { Button } from "@multica/ui/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@multica/ui/components/ui/dialog";
 import { Input } from "@multica/ui/components/ui/input";
@@ -48,6 +55,11 @@ const STATUS_CONFIG: Record<LeadStatus, { label: string; className: string }> = 
   cancelled: { label: "Cancelled", className: "bg-muted text-muted-foreground" },
 };
 
+const DEFAULT_APOLLO_TITLES = "Founder, CEO, Head of AI";
+const DEFAULT_APOLLO_LOCATIONS = "Brazil";
+const DEFAULT_APOLLO_KEYWORDS = "artificial intelligence, inteligencia artificial, AI";
+const DEFAULT_APOLLO_SENIORITIES = "founder, owner, c_suite, vp, director, head";
+
 function formatDate(value: string) {
   return new Intl.DateTimeFormat(undefined, {
     month: "short",
@@ -61,6 +73,19 @@ function displayName(lead: Lead) {
 
 function totalScore(lead: Lead) {
   return lead.score + lead.dynamic_score;
+}
+
+function splitList(value: string) {
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function mergeCandidates(current: ApolloCandidate[], next: ApolloCandidate[]) {
+  const byID = new Map(current.map((candidate) => [candidate.id, candidate]));
+  for (const candidate of next) byID.set(candidate.id, candidate);
+  return Array.from(byID.values());
 }
 
 function StatusBadge({ status }: { status: LeadStatus }) {
@@ -200,6 +225,216 @@ function ImportCsvDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
   );
 }
 
+function ApolloImportDialog({
+  open,
+  onOpenChange,
+  configured,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  configured: boolean;
+}) {
+  const searchApollo = useSearchApolloPreview();
+  const enrichApollo = useEnrichApolloCandidates();
+  const importApollo = useImportApprovedApolloCandidates();
+  const [titles, setTitles] = useState(DEFAULT_APOLLO_TITLES);
+  const [locations, setLocations] = useState(DEFAULT_APOLLO_LOCATIONS);
+  const [keywords, setKeywords] = useState(DEFAULT_APOLLO_KEYWORDS);
+  const [seniorities, setSeniorities] = useState(DEFAULT_APOLLO_SENIORITIES);
+  const [limit, setLimit] = useState(10);
+  const [batchID, setBatchID] = useState("");
+  const [candidates, setCandidates] = useState<ApolloCandidate[]>([]);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+
+  const selectedIDs = useMemo(
+    () => candidates.filter((candidate) => selected.has(candidate.id)).map((candidate) => candidate.id),
+    [candidates, selected],
+  );
+  const enrichedCount = candidates.filter((candidate) => Boolean(candidate.email)).length;
+  const busy = searchApollo.isPending || enrichApollo.isPending || importApollo.isPending;
+
+  const reset = () => {
+    setBatchID("");
+    setCandidates([]);
+    setSelected(new Set());
+  };
+
+  const toggleCandidate = (id: string) => {
+    setSelected((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const search = (event: FormEvent) => {
+    event.preventDefault();
+    if (!configured) return;
+    searchApollo.mutate(
+      {
+        titles: splitList(titles),
+        person_locations: [],
+        organization_locations: splitList(locations),
+        organization_keywords: splitList(keywords),
+        seniorities: splitList(seniorities),
+        limit,
+      },
+      {
+        onSuccess: (result) => {
+          setBatchID(result.batch_id);
+          setCandidates(result.candidates);
+          setSelected(new Set(result.candidates.map((candidate) => candidate.id)));
+          toast.success(`Apollo returned ${result.candidates.length} candidates`);
+        },
+        onError: (error) => toast.error(error instanceof Error ? error.message : "Apollo search failed"),
+      },
+    );
+  };
+
+  const enrich = () => {
+    if (!batchID || selectedIDs.length === 0) return;
+    enrichApollo.mutate(
+      { batch_id: batchID, candidate_ids: selectedIDs },
+      {
+        onSuccess: (result) => {
+          setCandidates((current) => mergeCandidates(current, result.candidates));
+          toast.success(`Enriched ${result.candidates.length} candidates`);
+        },
+        onError: (error) => toast.error(error instanceof Error ? error.message : "Apollo enrichment failed"),
+      },
+    );
+  };
+
+  const importSelected = () => {
+    if (!batchID || selectedIDs.length === 0) return;
+    importApollo.mutate(
+      { batch_id: batchID, candidate_ids: selectedIDs, no_send: true },
+      {
+        onSuccess: (result) => {
+          toast.success(`Imported ${result.imported} Apollo leads`);
+          reset();
+          onOpenChange(false);
+        },
+        onError: (error) => toast.error(error instanceof Error ? error.message : "Apollo import failed"),
+      },
+    );
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-4xl">
+        <DialogHeader>
+          <div className="flex items-center justify-between gap-3">
+            <DialogTitle>Apollo</DialogTitle>
+            <span className="inline-flex h-6 items-center gap-1.5 rounded-md bg-emerald-50 px-2 text-xs font-medium text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
+              <ShieldCheck className="size-3" />
+              No send
+            </span>
+          </div>
+        </DialogHeader>
+
+        <form onSubmit={search} className="grid gap-3">
+          <div className="grid gap-3 md:grid-cols-[1.2fr_1fr]">
+            <Input value={titles} onChange={(e) => setTitles(e.target.value)} placeholder="Titles" disabled={!configured || busy} />
+            <Input value={locations} onChange={(e) => setLocations(e.target.value)} placeholder="Company locations" disabled={!configured || busy} />
+            <Input value={keywords} onChange={(e) => setKeywords(e.target.value)} placeholder="Company keywords" disabled={!configured || busy} />
+            <div className="grid grid-cols-[1fr_88px] gap-3">
+              <Input value={seniorities} onChange={(e) => setSeniorities(e.target.value)} placeholder="Seniorities" disabled={!configured || busy} />
+              <Input
+                value={limit}
+                onChange={(e) => setLimit(Math.max(1, Math.min(10, Number(e.target.value) || 1)))}
+                type="number"
+                min={1}
+                max={10}
+                aria-label="Apollo limit"
+                disabled={!configured || busy}
+              />
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button type="submit" size="sm" disabled={!configured || busy}>
+              <Search />
+              Search
+            </Button>
+            <Button type="button" size="sm" variant="outline" onClick={enrich} disabled={!configured || busy || selectedIDs.length === 0}>
+              <Sparkles />
+              Enrich
+            </Button>
+            <Button type="button" size="sm" onClick={importSelected} disabled={!configured || busy || selectedIDs.length === 0}>
+              <ShieldCheck />
+              Import
+            </Button>
+            <span className="ml-auto text-xs text-muted-foreground">
+              {selectedIDs.length} selected / {enrichedCount} enriched
+            </span>
+          </div>
+        </form>
+
+        <div className="max-h-[48vh] overflow-auto rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-10" />
+                <TableHead>Contact</TableHead>
+                <TableHead>Company</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead className="text-right">Score</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {candidates.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="h-24 text-center text-sm text-muted-foreground">
+                    {configured ? "No candidates" : "Apollo not configured"}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                candidates.map((candidate) => (
+                  <TableRow key={candidate.id}>
+                    <TableCell>
+                      <input
+                        type="checkbox"
+                        checked={selected.has(candidate.id)}
+                        onChange={() => toggleCandidate(candidate.id)}
+                        aria-label={`Select ${candidate.name || candidate.company || "candidate"}`}
+                        className="size-4 rounded border-input accent-primary"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <div className="min-w-0">
+                        <div className="truncate font-medium">{candidate.name || "--"}</div>
+                        <div className="truncate text-xs text-muted-foreground">{candidate.title || "--"}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="min-w-0">
+                        <div className="truncate">{candidate.company || "--"}</div>
+                        <div className="truncate text-xs text-muted-foreground">{candidate.domain || "--"}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="min-w-0">
+                        <div className="truncate">{candidate.email || "--"}</div>
+                        <div className="truncate text-xs text-muted-foreground">{candidate.email_status || candidate.status}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">{candidate.score}</TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
+
+        <DialogFooter>
+          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Close</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function LeadsTable({ leads }: { leads: Lead[] }) {
   const updateLead = useUpdateLead();
 
@@ -275,11 +510,14 @@ export function LeadsPage() {
   const [statusFilter, setStatusFilter] = useState<LeadStatus | "all">("all");
   const [createOpen, setCreateOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
+  const [apolloOpen, setApolloOpen] = useState(false);
   const params = useMemo(
     () => (statusFilter === "all" ? {} : { status: statusFilter }),
     [statusFilter],
   );
   const { data: leads = [], isLoading } = useQuery(leadListOptions(wsId, params));
+  const { data: apolloStatus } = useQuery(apolloStatusOptions(wsId));
+  const apolloConfigured = Boolean(apolloStatus?.configured);
   const hotCount = leads.filter((lead) => totalScore(lead) >= 7 || lead.status === "hot").length;
 
   if (isLoading) {
@@ -313,6 +551,16 @@ export function LeadsPage() {
           <span className="text-sm font-medium">Leads</span>
         </div>
         <div className="flex items-center gap-1.5">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setApolloOpen(true)}
+            disabled={!apolloConfigured}
+            title={apolloConfigured ? "Apollo" : "Apollo not configured"}
+          >
+            <Search />
+            Apollo
+          </Button>
           <Button variant="outline" size="sm" onClick={() => setImportOpen(true)}>
             <Upload />
             Import
@@ -367,6 +615,10 @@ export function LeadsPage() {
               <Plus />
               New lead
             </Button>
+            <Button size="sm" variant="outline" onClick={() => setApolloOpen(true)} disabled={!apolloConfigured}>
+              <Search />
+              Apollo
+            </Button>
             <Button size="sm" variant="outline" onClick={() => setImportOpen(true)}>
               <Upload />
               Import
@@ -381,6 +633,7 @@ export function LeadsPage() {
 
       <CreateLeadDialog open={createOpen} onOpenChange={setCreateOpen} />
       <ImportCsvDialog open={importOpen} onOpenChange={setImportOpen} />
+      <ApolloImportDialog open={apolloOpen} onOpenChange={setApolloOpen} configured={apolloConfigured} />
     </div>
   );
 }

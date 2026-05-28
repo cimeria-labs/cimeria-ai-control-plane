@@ -9,6 +9,7 @@ export const leadKeys = {
   detail: (wsId: string, id: string) =>
     [...leadKeys.all(wsId), "detail", id] as const,
   scoreRules: (wsId: string) => [...leadKeys.all(wsId), "score-rules"] as const,
+  apolloStatus: (wsId: string) => [...leadKeys.all(wsId), "apollo-status"] as const,
 };
 
 export function leadListOptions(wsId: string, params: ListLeadsParams = {}) {
@@ -30,5 +31,12 @@ export function leadScoreRuleListOptions(wsId: string) {
   return queryOptions({
     queryKey: leadKeys.scoreRules(wsId),
     queryFn: () => api.listLeadScoreRules(),
+  });
+}
+
+export function apolloStatusOptions(wsId: string) {
+  return queryOptions({
+    queryKey: leadKeys.apolloStatus(wsId),
+    queryFn: () => api.getApolloStatus(),
   });
 }

@@ -1,4 +1,4 @@
-﻿-- name: CreateLead :one
+-- name: CreateLead :one
 INSERT INTO lead (
     workspace_id, email, name, company, title, source,
     status, score, dynamic_score, assignee_type, assignee_id,
