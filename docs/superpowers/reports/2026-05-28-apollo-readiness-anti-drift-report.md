@@ -29,13 +29,13 @@ Scope: analysis only; no Apollo implementation; no product code changes; no real
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| VM project path | pending | pending |
-| VM branch/commit | pending | pending |
-| VM dirty state | pending | pending |
-| Backend runtime method | pending | pending |
-| Frontend runtime method | pending | pending |
-| Reverse proxy | pending | pending |
-| Serving process/container | pending | pending |
+| VM project path | PASS | Active backend process cwd is `/home/opc/swota/multica-main/server`. Additional Git worktree found at `/home/opc/swota-work/multica-main`, currently running the prospector sandbox. |
+| VM branch/commit | WARN | Active backend repo is `/home/opc/swota/multica-main` on branch `master` at `d15f5af fix: restore @multica package imports in landing-header`, remote `git@github.com:ferako/swota.git`. This differs from the public repo `cimeria-labs/cimeria-ai-control-plane`. |
+| VM dirty state | BLOCKED | Active backend repo is heavily dirty with modified/deleted/untracked files across frontend, backend, CLI, migrations, leads/SDR handlers, generated SQL, parent `.env`, backup directory, logs, and `node_modules`. The running binary cannot be certified as Git-clean. |
+| Backend runtime method | PASS | Backend is running as a native ARM64 binary: PID `1149694`, command `./bin/server-arm64`, executable `/home/opc/swota/multica-main/server/bin/server-arm64`, listening on `*:8080`. |
+| Frontend runtime method | PASS | Frontend is Dockerized: container `multica-frontend-1`, image `multica-frontend:latest`, bound to `127.0.0.1:3000->3000/tcp`. Additional staging frontend container `multica_stage-frontend-1` is bound to port `13000`. |
+| Reverse proxy | PASS | `caddy.service` is active. `/etc/caddy/Caddyfile` routes `app.cimeria.online` `/auth/*`, `/api/*`, `/ws`, and `/uploads/*` to `127.0.0.1:8080`, and all other traffic to `127.0.0.1:3000`. |
+| Serving process/container | PASS | Public app path is served by Caddy. Backend: native `server-arm64` PID `1149694`. Frontend: Docker container `multica-frontend-1`. Database: Docker container `multica-postgres-1`. Hermes/daemon: `multica daemon start --foreground` PID `441602`. |
 
 ## Secret and Env Status
 
