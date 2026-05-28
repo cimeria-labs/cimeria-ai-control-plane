@@ -41,12 +41,12 @@ Scope: analysis only; no Apollo implementation; no product code changes; no real
 
 | Name | Status | Source Checked |
 | --- | --- | --- |
-| DATABASE_URL | pending | pending |
-| RESEND_API_KEY | pending | pending |
-| BACKEND_ORIGIN | pending | pending |
-| FRONTEND_ORIGIN | pending | pending |
-| JWT/session/auth secret | pending | pending |
-| APOLLO_API_KEY | pending | pending |
+| DATABASE_URL | present | Active backend process env and VM env files checked. |
+| RESEND_API_KEY | present | Active backend process env and VM env files checked. |
+| BACKEND_ORIGIN | present | Active backend process env and VM env files checked. |
+| FRONTEND_ORIGIN | present | Active backend process env and VM env files checked. |
+| JWT/session/auth secret | present | `JWT_SECRET` is present in active backend process env and VM env files; `SESSION_SECRET`, `AUTH_SECRET`, and `MAGIC_CODE_SECRET` were missing. |
+| APOLLO_API_KEY | missing | Missing in active backend process env and checked VM env files. This blocks live Apollo API validation, but not local design/readiness analysis. |
 
 ## Product Health
 
