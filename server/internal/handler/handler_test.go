@@ -31,6 +31,10 @@ const (
 )
 
 func TestMain(m *testing.M) {
+	if canRunWithoutHandlerFixture() {
+		os.Exit(m.Run())
+	}
+
 	ctx := context.Background()
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
@@ -72,6 +76,17 @@ func TestMain(m *testing.M) {
 	}
 	pool.Close()
 	os.Exit(code)
+}
+
+func canRunWithoutHandlerFixture() bool {
+	runPattern := ""
+	for _, arg := range os.Args {
+		if strings.HasPrefix(arg, "-test.run=") {
+			runPattern = strings.TrimPrefix(arg, "-test.run=")
+			break
+		}
+	}
+	return strings.Contains(runPattern, "TestLeadImportBatchProviderSet")
 }
 
 func setupHandlerTestFixture(ctx context.Context, pool *pgxpool.Pool) (string, string, error) {
