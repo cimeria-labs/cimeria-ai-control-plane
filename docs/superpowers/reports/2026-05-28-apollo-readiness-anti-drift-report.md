@@ -78,12 +78,12 @@ Scope: analysis only; no Apollo implementation; no product code changes; no real
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| APOLLO_API_KEY configured in intended env | pending | pending |
-| API access plan/limits understood | pending | pending |
-| Secret remains server-side | pending | pending |
-| Source config can store non-secret filters | pending | pending |
-| Dry-run/import approval path exists or is missing | pending | pending |
-| Enrichment is separable from search | pending | pending |
+| APOLLO_API_KEY configured in intended env | BLOCKED | `APOLLO_API_KEY` is missing from the active backend process env and checked VM env files. No live Apollo API call was attempted. |
+| API access plan/limits understood | WARN | Official Apollo docs confirm People API Search uses `POST https://api.apollo.io/api/v1/mixed_people/api_search`, is for net-new people, does not return emails/phones, and requires a master API key. Enrichment is separate and credit-bearing. Usage/rate-limit inspection is available via `POST https://api.apollo.io/api/v1/usage_stats/api_usage_stats`, but also requires a master API key. Sources: https://docs.apollo.io/reference/people-api-search, https://docs.apollo.io/reference/people-enrichment, https://docs.apollo.io/reference/bulk-people-enrichment, https://docs.apollo.io/reference/view-api-usage-stats. |
+| Secret remains server-side | WARN | No Apollo connector exists yet, so there is no current client-side leak. Future implementation must keep `APOLLO_API_KEY` backend-only and never store it in `lead_source.config`, frontend state, demo assets, logs, or repo files. |
+| Source config can store non-secret filters | WARN | `lead_source` supports `provider`, `config`, `auto_approve`, and `enrichment_enabled`; `validLeadSourceProviders` includes `apollo`. However, the public migrations do not create the required lead source/import tables, so this is not reproducible from a clean public migration run. |
+| Dry-run/import approval path exists or is missing | BLOCKED | There are curator rules and bulk approve/reject actions after leads exist, plus source-level `auto_approve`, but no Apollo search preview/dry-run endpoint was found that lets a human approve candidates before lead creation. This is required before Apollo import. |
+| Enrichment is separable from search | WARN | Apollo's API separates search from people/bulk enrichment, and Cimeria has an `enrichment_enabled` source flag. The product still lacks an Apollo connector, enrichment job, webhook/idempotency handling for waterfall, and no-send approval gate. |
 
 ## Categorized Findings
 
