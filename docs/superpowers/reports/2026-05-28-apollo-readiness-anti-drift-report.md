@@ -18,12 +18,12 @@ Scope: analysis only; no Apollo implementation; no product code changes; no real
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Local branch | pending | pending |
-| Working tree | pending | pending |
-| Ahead/behind | pending | pending |
-| Remote | pending | pending |
-| Recent commits | pending | pending |
-| GitHub CI | pending | pending |
+| Local branch | PASS | Active local branch is `codex/apollo-readiness-audit`; created from local `main` after spec and plan commits. |
+| Working tree | PASS | `git status -sb` showed a clean working tree on `codex/apollo-readiness-audit`. |
+| Ahead/behind | WARN | Audit branch has no upstream yet. Compared to `origin/main`, it includes 3 local commits: spec, plan, and report scaffold. Local `main` is ahead of `origin/main` by 2 commits. |
+| Remote | PASS | `origin` points to `https://github.com/cimeria-labs/cimeria-ai-control-plane.git`. |
+| Recent commits | PASS | Latest commits: `2d574e6 docs: scaffold Apollo readiness reports`, `4830ea1 docs: add Apollo readiness anti-drift plan`, `cd6c5f3 docs: add Apollo readiness anti-drift spec`, `b3c4ff8 refactor: expose Cimeria icon naming`. |
+| GitHub CI | PASS | GitHub repo is public, default branch is `main`, latest origin/main CI run `26328754027` completed successfully for `b3c4ff8`. Current audit branch has not been pushed, so it has no branch CI yet. |
 
 ## VM Runtime Baseline
 
