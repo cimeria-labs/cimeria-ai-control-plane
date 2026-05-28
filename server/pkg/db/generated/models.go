@@ -372,9 +372,9 @@ type Lead struct {
 	PainPoints         string             `json:"pain_points"`
 	IcpFit             string             `json:"icp_fit"`
 	LeadTemperature    string             `json:"lead_temperature"`
-	ImportBatchID      pgtype.UUID        `json:"import_batch_id"`
 	CuratedAt          pgtype.Timestamptz `json:"curated_at"`
 	CuratedBy          pgtype.UUID        `json:"curated_by"`
+	ImportBatchID      pgtype.UUID        `json:"import_batch_id"`
 }
 
 type LeadCuratorRule struct {
@@ -407,6 +407,29 @@ type LeadImportBatch struct {
 	Metadata       []byte             `json:"metadata"`
 	CreatedAt      pgtype.Timestamptz `json:"created_at"`
 	UpdatedAt      pgtype.Timestamptz `json:"updated_at"`
+}
+
+type LeadImportCandidate struct {
+	ID              pgtype.UUID        `json:"id"`
+	WorkspaceID     pgtype.UUID        `json:"workspace_id"`
+	BatchID         pgtype.UUID        `json:"batch_id"`
+	Provider        string             `json:"provider"`
+	ExternalID      string             `json:"external_id"`
+	Email           pgtype.Text        `json:"email"`
+	EmailStatus     pgtype.Text        `json:"email_status"`
+	Name            string             `json:"name"`
+	Company         string             `json:"company"`
+	Title           string             `json:"title"`
+	Domain          string             `json:"domain"`
+	LinkedinUrl     string             `json:"linkedin_url"`
+	Status          string             `json:"status"`
+	Score           int32              `json:"score"`
+	Payload         []byte             `json:"payload"`
+	EnrichedPayload []byte             `json:"enriched_payload"`
+	Error           pgtype.Text        `json:"error"`
+	LeadID          pgtype.UUID        `json:"lead_id"`
+	CreatedAt       pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt       pgtype.Timestamptz `json:"updated_at"`
 }
 
 type LeadScoreRule struct {
