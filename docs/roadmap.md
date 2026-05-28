@@ -25,7 +25,7 @@ Captured expansion backlog:
 ## Integrations
 
 - Promote Google Places configuration into the main backend with clear env validation.
-- Add Apollo as a no-send lead source: search preview, approved enrichment, import, and source metadata.
+- Harden Apollo as a no-send lead source: the connector foundation is in place for search preview, approved enrichment, import, and source metadata; live provider onboarding and account-level API access validation are the next gate.
 - Add Clay as an enrichment waterfall only when Apollo/internal data is incomplete.
 - Add Pipedrive as the CRM handoff layer for qualified leads, deals, notes, activities, and stage sync.
 - Refresh or replace stale Cimeria/PAT tokens used by sandbox import tooling.

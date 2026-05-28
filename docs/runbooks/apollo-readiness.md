@@ -146,3 +146,15 @@ Apollo implementation can start only when all of these are true:
 - Login and authenticated workspace smoke tests pass.
 - A no-send import path exists or is the explicit next implementation task.
 - No real lead email send happens during validation.
+
+## Live Apollo Connector Smoke
+
+Use this only after `APOLLO_API_KEY` is present in the backend runtime. Keep all output sanitized.
+
+Expected healthy connector path:
+
+- Apollo auth health returns HTTP 200 and indicates the key is logged in.
+- Cimeria `/api/integrations/apollo/status` returns HTTP 200 with `configured=true`.
+- Cimeria `/api/integrations/apollo/search-preview` is exercised with `no_send` behavior and no email delivery.
+
+If Apollo auth health passes but a specific Apollo data endpoint returns an entitlement or access error, treat the Cimeria connector as configured and continue provider onboarding/account-access validation before claiming live Apollo data flow is complete.
