@@ -92,5 +92,9 @@ func TestLeadReadinessMigrationsContainGeneratedCodeSchema(t *testing.T) {
 		"auto_approve BOOLEAN NOT NULL DEFAULT false",
 		"enrichment_enabled BOOLEAN NOT NULL DEFAULT true",
 		"metadata JSONB NOT NULL DEFAULT '{}'",
+		"DROP CONSTRAINT IF EXISTS lead_import_batch_provider_check",
+		"DROP CONSTRAINT IF EXISTS lead_import_batch_status_check",
+		"'apollo'",
+		"'preview'",
 	)
 }
