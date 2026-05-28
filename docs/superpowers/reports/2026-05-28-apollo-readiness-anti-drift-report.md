@@ -52,8 +52,8 @@ Scope: analysis only; no Apollo implementation; no product code changes; no real
 
 | Flow | Result | Evidence |
 | --- | --- | --- |
-| POST /auth/send-code public | pending | pending |
-| POST /auth/send-code internal | pending | pending |
+| POST /auth/send-code public | PASS | VM `curl` to `https://app.cimeria.online/auth/send-code` returned HTTP 200 with `{"message":"Verification code sent"}` on 2026-05-28 06:19 UTC. |
+| POST /auth/send-code internal | PASS/WARN | VM `curl` to `http://127.0.0.1:8080/auth/send-code` reached the backend and returned HTTP 429 `please wait before requesting another code` immediately after the public request, which confirms routing and rate limiting. Ports `8081`, `8787`, and `9090` were not serving this route. |
 | POST /auth/verify-code | pending | pending |
 | Workspace page/reachability | pending | pending |
 | Runtime registration/status | pending | pending |
